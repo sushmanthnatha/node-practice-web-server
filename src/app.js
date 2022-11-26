@@ -1,5 +1,6 @@
 const express = require('express')
 const path = require('path')
+const hbs = require('hbs')
 
 console.log(__dirname)
 console.log(path.join(__dirname,'../public'))
@@ -9,8 +10,9 @@ const app = express()
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname,'../public')
-const viewsPath = path.join(__dirname+'/../templates')
-
+const viewsPath = path.join(__dirname+'/../templates/views')
+const partialsPath = path.join(__dirname+'/../templates/partials'
+)
 // setup static dir to serve
 app.use(express.static(publicDirectoryPath))
 
@@ -33,25 +35,30 @@ app.use(express.static(publicDirectoryPath))
 // setup handlebars engine and views location
 app.set('view engine','hbs')
 app.set('views', viewsPath)
+hbs.registerPartials(partialsPath)
+
+
 
 app.get('', (req,res) => {
     res.render('index', {
-        title: 'weather app',
-        name: 'sushmanth'
+        title: 'Home',
+        name: 'Sushmanth'
     })
 })
 
 app.get('/about', (req, res) => {
     res.render('about', {
-        title: 'About page',
-        name: 'Sush'
+        title: 'About',
+        name: 'Sushmanth'
     })
 })
 
 app.get('/help', (req, res) => {
     res.render('help', {
         question : 'How to request weather data for a location ?',
-        answer: 'just pass your location to our weather forecase endpoint'
+        answer: 'just pass your location to our weather forecase endpoint',
+        title:'Help',
+        name: 'Sushmanth'
     })
 })
 
@@ -61,6 +68,13 @@ app.get('/weather', (req,res)=>{
         temperature: 28,
         feelsLike: 25
     })
+})
+
+app.get('/help/*', (req, res) => {
+    res.send('My 404 help page')
+})
+app.get('*', (req, res)=>{
+    res.send('My 404 page')
 })
 
 app.listen(3000, ()=>{
